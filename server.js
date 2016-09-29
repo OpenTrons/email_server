@@ -23,7 +23,7 @@ app.post("/", function(req, res) {
 
   var from_email = new helper.Email(req.body.email);
   var to_email = new helper.Email('info@opentrons.com');
-  var content = new helper.Content('text/plain', `New ${subject} from ${req.body.name}.\n\nEmail address: ${req.body.email}.\n\nMessage:\n\n${req.body.message}`);
+  var content = new helper.Content('text/plain', `New ${subject}.\n\nEmail address: ${req.body.email}.\n\nMessage:\n\n${req.body.message}`);
   if(req.body.organization) { subject += ` at ${req.body.organization}` };
   sendEmail(from_email, subject, to_email, content);
 
