@@ -7,14 +7,14 @@ var fs = require('fs')
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "Origin, X-Requested-With, Content-Type, Accept");
-    console.log(req.body)
-    next();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
 app.post("/", function(req, res) {
+  console.log(req.body)
   if(req.body.type == "message") {
     var subject = `Message from ${req.body.name}`
   } else {
@@ -26,6 +26,13 @@ app.post("/", function(req, res) {
   var content = new helper.Content('text/plain', `New ${subject} from ${req.body.name}.\n\nEmail address: ${req.body.email}.\n\nMessage:\n\n${req.body.message}`);
   if(req.body.organization) { subject += ` at ${req.body.organization}` };
   sendEmail(from_email, subject, to_email, content);
+
+  var resultMessage = {
+    "success": `POST Successful. RequestBody: ${req.body}`,
+    "status": 200
+  }
+
+  res.end(JSON.stringify(resultMessage));
 })
 
 app.post('/specsheet', function(req, res) {
@@ -33,11 +40,18 @@ app.post('/specsheet', function(req, res) {
   var to_email = new helper.Email(req.body.email);
   var content = new helper.Content('text/plain', "Attached is the specsheet for the Opentrons.");
   sendEmail(from_email, "Opentrons Specsheet", to_email, content);
+
+  var resultMessage = {
+    "success": `POST Successful. RequestBody: ${JSON.stringify(req.body)}`,
+    "status": 200
+  }
+
+  res.end(JSON.stringify(resultMessage));
 })
 
 function sendEmail(from_email, subject, to_email, content) {
   var mail = new helper.Mail(from_email, subject, to_email, content);
-  var sg = require('sendgrid')(process.env.SENDFRID_API_KEY)
+  var sg = require('sendgrid')(process.env.SENDGRID_API_KEY)
   var request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
@@ -49,13 +63,6 @@ function sendEmail(from_email, subject, to_email, content) {
     console.log(response.body);
     console.log(response.headers);
   });
-
-  var resultMessage = {
-    "success": `POST Successfull. RequestBody: ${req.body}`,
-    "status": 200
-  }
-
-  res.end(JSON.stringify(resultMessage));
 }
 
 var https = require('https');
@@ -65,3 +72,5 @@ var options = {
   cert: fs.readFileSync('./certificate.pem')
 };
 var secureServer = https.createServer(options, app).listen(httpsPort);
+
+// app.listen(3000)
