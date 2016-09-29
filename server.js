@@ -38,7 +38,7 @@ app.post("/", function(req, res) {
 app.post('/specsheet', function(req, res) {
   var from_email = new helper.Email("info@opentrons.com");
   var to_email = new helper.Email(req.body.email);
-  var content = new helper.Content('text/plain', "Attached is the specsheet for the Opentrons.");
+  var content = new helper.Content('text/html', "Below you can find a link to the specifications for the Opentrons robots. Feel free to respond to this email with any questions!<br><br><a href='https://s3-us-west-2.amazonaws.com/ot-blog-files/Opentrons_Brochure.pdf'>Click here for the specification sheet.</a>");
   sendEmail(from_email, "Opentrons Specsheet", to_email, content);
 
   var resultMessage = {
