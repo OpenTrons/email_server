@@ -38,7 +38,7 @@ app.post("/", function(req, res) {
 app.post('/specsheet', function(req, res) {
   var from_email = new helper.Email("info@opentrons.com");
   var to_email = new helper.Email(req.body.email);
-  var content = new helper.Content('text/html', "Thank you for requesting an Opentrons robot spec sheet (see file link below). If you have any more questions about the robots, protocols, web demos, or anything else on our website, don't hesistate to reach out to us on <a href="mailto:info@opentrons.com">info@opentrons.com</a>!! <br><br><a href='https://s3-us-west-2.amazonaws.com/ot-blog-files/Opentrons_Brochure.pdf'>Click here for the specification sheet.</a>");
+  var content = new helper.Content('text/html', "Thank you for requesting an Opentrons robot spec sheet (see file link below). If you have any more questions about the robots, protocols, web demos, or anything else on our website, don't hesistate to reach out to us on <a href='mailto:info@opentrons.com'>info@opentrons.com</a>!! <br><br><a href='https://s3-us-west-2.amazonaws.com/ot-blog-files/Opentrons_Brochure.pdf'>Click here for the specification sheet.</a>");
   sendEmail(from_email, "Opentrons Spec Sheet Request " + from_email.split("@")[0], to_email, content);
 
   var resultMessage = {
@@ -73,4 +73,4 @@ var options = {
 };
 var secureServer = https.createServer(options, app).listen(httpsPort);
 
-// app.listen(3000)
+//app.listen(3000)
