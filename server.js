@@ -1,8 +1,8 @@
-var express= require("express")
-var app = express()
-var bodyParser = require("body-parser")
-var helper = require('sendgrid').mail;
-var fs = require('fs')
+const express= require("express")
+const app = express()
+const bodyParser = require("body-parser")
+const helper = require('sendgrid').mail;
+const fs = require('fs')
 
 app.use(bodyParser.json());
 
@@ -13,21 +13,29 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.get("/", function(req, res) {
+  let resultMessage = {
+    "success": `GET Successful. RequestBody: ${req.body}`,
+    "status": 200
+  }
+  res.end(JSON.stringify(resultMessage));
+})
+
 app.post("/", function(req, res) {
   console.log(req.body)
   if(req.body.type == "message") {
-    var subject = `Message from ${req.body.name}`
+    let subject = `Message from ${req.body.name}`
   } else {
-    var subject = `Demo Request from ${req.body.name}`
+    let subject = `Demo Request from ${req.body.name}`
   }
 
-  var from_email = new helper.Email(req.body.email);
-  var to_email = new helper.Email('info@opentrons.com');
-  var content = new helper.Content('text/plain', `New ${subject}.\n\nEmail address: ${req.body.email}.\n\nMessage:\n\n${req.body.message}`);
+  let from_email = new helper.Email(req.body.email);
+  let to_email = new helper.Email('info@opentrons.com');
+  let content = new helper.Content('text/plain', `New ${subject}.\n\nEmail address: ${req.body.email}.\n\nMessage:\n\n${req.body.message}`);
   if(req.body.organization) { subject += ` at ${req.body.organization}` };
   sendEmail(from_email, subject, to_email, content);
 
-  var resultMessage = {
+  let resultMessage = {
     "success": `POST Successful. RequestBody: ${req.body}`,
     "status": 200
   }
@@ -36,14 +44,14 @@ app.post("/", function(req, res) {
 })
 
 app.post('/specsheet', function(req, res) {
-  var from_email = new helper.Email("info@opentrons.com");
-  var to_email = new helper.Email(req.body.email);
-  var content = new helper.Content('text/html', "Thank you for requesting an Opentrons robot spec sheet (see file link below). If you have any more questions about the robots, protocols, web demos, or anything else on our website, don't hesistate to reach out to us on <a href='mailto:info@opentrons.com'>info@opentrons.com</a>!! <br><br><a href='https://s3-us-west-2.amazonaws.com/ot-blog-files/Opentrons_Brochure.pdf'>Click here for the specification sheet.</a>");
+  let from_email = new helper.Email("info@opentrons.com");
+  let to_email = new helper.Email(req.body.email);
+  let content = new helper.Content('text/html', "Thank you for requesting an Opentrons robot spec sheet (see file link below). If you have any more questions about the robots, protocols, web demos, or anything else on our website, don't hesistate to reach out to us on <a href='mailto:info@opentrons.com'>info@opentrons.com</a>!! <br><br><a href='https://s3-us-west-2.amazonaws.com/ot-blog-files/Opentrons_Brochure.pdf'>Click here for the specification sheet.</a>");
   console.log(from_email)
-  var subject = "Opentrons Spec Sheet Request " + req.body.email.split("@")[0];
+  let subject = "Opentrons Spec Sheet Request " + req.body.email.split("@")[0];
   sendEmail(from_email, subject, to_email, content);
 
-  var resultMessage = {
+  let resultMessage = {
     "success": `POST Successful. RequestBody: ${JSON.stringify(req.body)}`,
     "status": 200
   }
@@ -52,9 +60,9 @@ app.post('/specsheet', function(req, res) {
 })
 
 function sendEmail(from_email, subject, to_email, content) {
-  var mail = new helper.Mail(from_email, subject, to_email, content);
-  var sg = require('sendgrid')(process.env.SENDGRID_API_KEY)
-  var request = sg.emptyRequest({
+  let mail = new helper.Mail(from_email, subject, to_email, content);
+  let sg = require('sendgrid')(process.env.SENDGRID_API_KEY)
+  let request = sg.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
     body: mail.toJSON(),
@@ -67,12 +75,12 @@ function sendEmail(from_email, subject, to_email, content) {
   });
 }
 
-var https = require('https');
-var httpsPort = 3000;
-var options = {
+let https = require('https');
+let httpsPort = 3000;
+let options = {
   key: fs.readFileSync('./private.key'),
   cert: fs.readFileSync('./certificate.pem')
 };
-var secureServer = https.createServer(options, app).listen(httpsPort);
+let secureServer = https.createServer(options, app).listen(httpsPort);
 
 // app.listen(3000)
