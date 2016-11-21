@@ -24,11 +24,11 @@ app.get("/", function(req, res) {
 
 app.post("/", function(req, res) {
   console.log(req.body)
-  let subject
-  if(req.body.type == "message") {
-    let subject = `Message from ${req.body.name}`
+  let subject = "User Message"
+  if(req.body.type == "message" && typeof(req.body.name) != undefined ) {
+    subject = `Message from ${req.body.name}`
   } else {
-    let subject = `Demo Request from ${req.body.name}`
+    subject = `Demo Request from ${req.body.name}`
   }
 
   let from_email = new helper.Email(req.body.email);
