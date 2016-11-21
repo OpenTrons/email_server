@@ -24,6 +24,7 @@ app.get("/", function(req, res) {
 
 app.post("/", function(req, res) {
   console.log(req.body)
+  let subject
   if(req.body.type == "message") {
     let subject = `Message from ${req.body.name}`
   } else {
